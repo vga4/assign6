@@ -26,8 +26,8 @@ class App extends Component {
 
   renderStreamGraph() {
     const data = this.state.data
-    const colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"]
-    const keys = ["LLaMA-3.1", "Claude", "PaLM-2", "Gemini", "GPT-4"];
+    const colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"] //colors for the graph 
+    const keys = ["GPT-4", "Gemini", "PaLM-2", "Claude", "LLaMA-3.1"] //keys for the graph, these should match the 
     const stack = d3.stack().keys(keys).offset(d3.stackOffsetSilhouette); //stack the data
     const stackedData = stack(data);
 
@@ -87,19 +87,21 @@ class App extends Component {
 
     const legend = graphGroup.append('g')
       .attr('transform', `translate(${650}, 20)`); //determines the position of the legend
+
+    const reversedLegend = keys.reverse()
   
-      keys.forEach((keys, i) => {
+      reversedLegend.forEach((reversedLegend, i) => {
       legend.append('rect')
         .attr('x', 20)
         .attr('y', i * 20)
         .attr('width', 15)
         .attr('height', 15)
-        .attr('fill', color(keys));
+        .attr('fill', color(reversedLegend));
   
       legend.append('text')
         .attr('x', 40) 
         .attr('y', i * 20 + 12)  
-        .text(keys)
+        .text(reversedLegend)
         .style('font-size', '12px')  
         
     });
