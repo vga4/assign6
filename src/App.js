@@ -47,8 +47,7 @@ class App extends Component {
       .range([0, width]);
 
     const y = d3.scaleLinear()
-      .domain([d3.min(stackedData, layer => d3.min(layer, d => d[0])),
-               d3.max(stackedData, layer => d3.max(layer, d => d[1]))])
+      .domain([d3.min(stackedData, layer => d3.min(layer, d => d[0])), d3.max(stackedData, layer => d3.max(layer, d => d[1]))])
       .range([height, 0]);
 
     const areaGen = d3.area().x(d => x(new Date(d.data.Date)))
