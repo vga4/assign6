@@ -13,9 +13,8 @@ class App extends Component {
     
   }
     set_data = (data) => {
-          this.setState({ data });
-        }
-  //reading from the test.csv file
+      this.setState({ data });
+    }
   componentDidMount() {
   }
 
@@ -28,7 +27,7 @@ class App extends Component {
   renderStreamGraph() {
     const data = this.state.data
     const colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"]
-    const keys = ["GPT-4", "Gemini", "PaLM-2", "Claude", "LLaMA-3.1"];
+    const keys = ["LLaMA-3.1", "Claude", "PaLM-2", "Gemini", "GPT-4"];
     const stack = d3.stack().keys(keys).offset(d3.stackOffsetSilhouette); //stack the data
     const stackedData = stack(data);
 
