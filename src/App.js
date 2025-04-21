@@ -10,11 +10,11 @@ class App extends Component {
       data: [],
     };
     this.set_data = this.set_data.bind(this);
-    
+
   }
-    set_data = (data) => {
-      this.setState({ data });
-    }
+  set_data = (data) => {
+    this.setState({ data });
+  }
   componentDidMount() {
   }
 
@@ -54,6 +54,8 @@ class App extends Component {
       .y1(d => y(d[1]))
       .curve(d3.curveCardinal);
 
+    console.log(data);
+
     const tooltip = d3.select('.tooltip');
 
     const graphGroup = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
@@ -65,11 +67,11 @@ class App extends Component {
       .attr('fill', ({ key }) => color(key))
       .on('mouseover', (event, d) => {
         tooltip.style('display', 'block')
-          .html('')  
-          .style('left', `${event.pageX + 10}px`) 
-          .style('top', `${event.pageY + 10}px`); 
+          .html('')
+          .style('left', `${event.pageX + 10}px`)
+          .style('top', `${event.pageY + 10}px`);
         const miniChart = this.createBarChart(d, color(d.key));
-        tooltip.node().appendChild(miniChart); 
+        tooltip.node().appendChild(miniChart);
       })
       .on('mousemove', event => {
         tooltip.style('left', `${event.pageX + 10}px`)
@@ -82,66 +84,67 @@ class App extends Component {
     //graphGroup.append('g').call(d3.axisLeft(y)); {/*add this back in to show y -axis */}
 
     graphGroup.append('g')
-      .attr('transform', `translate(0,${height+15})`) //added 15 to height so the stream graph wouldn't overlap with the x-axis
+      .attr('transform', `translate(0,${height + 15})`) //added 15 to height so the stream graph wouldn't overlap with the x-axis
       .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b'))); //added tickFormat so that the months would properly show
 
     const legend = graphGroup.append('g')
       .attr('transform', `translate(${650}, 20)`); //determines the position of the legend
 
-    const reversedLegend = keys.reverse()
-  
-      reversedLegend.forEach((reversedLegend, i) => {
+    const reversedLegend = keys.reverse() //get the proper order of legend
+
+    reversedLegend.forEach((reversedLegend, i) => {
       legend.append('rect')
         .attr('x', 20)
         .attr('y', i * 20)
         .attr('width', 15)
         .attr('height', 15)
         .attr('fill', color(reversedLegend));
-  
+
       legend.append('text')
-        .attr('x', 40) 
-        .attr('y', i * 20 + 12)  
+        .attr('x', 40)
+        .attr('y', i * 20 + 12)
         .text(reversedLegend)
-        .style('font-size', '12px')  
-        
+        .style('font-size', '12px')
+
     });
   }
 
   createBarChart(d, color) { //get data and color from the createStreamGraph
-    const data = d; 
-    const width = 300;
-    const height = 150;
-  
-    const margin = { top: 0, right: 20, bottom: 20, left: 40 };
-  
+    const data = d;
+    const width = 550;
+    const height = 250;
+
+    const margin = { top: 10, right: 20, bottom: 20, left: 40 };
+
     const x = d3.scaleBand()
       .domain(data.map(d => new Date(d.data.Date))) //new Date so each bar is shown in mini chart
       .range([0, width - margin.left - margin.right])
       .padding(0.2);
-  
-    const y = d3.scaleLinear().domain([0, d3.max(data, d => d[1] - d[0])]).range([height - margin.top - margin.bottom, 0]); 
-  
+    //determine range for x axis (the months from data)
+
+    const y = d3.scaleLinear().domain([0, d3.max(data, d => d[1] - d[0])]).range([height - margin.top - margin.bottom, 0]); //determine the range for the y-axis
+
     const svg = d3.create('svg').attr('width', width).attr('height', height);
-  
+
     const chartGroup = svg.append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
-  
+      .attr('transform', `translate(${margin.left},${margin.top})`); //determines the size of the tooltip container
+
     chartGroup.selectAll('rect').data(data).join('rect')
-      .attr('x', d => x(new Date(d.data.Date)))  
-      .attr('y', d => y(d[1] - d[0]))  
-      .attr('width', x.bandwidth())  
-      .attr('height', d => y(0) - y(d[1] - d[0]))  
-      .attr('fill', color);  
-  
+      .attr('x', d => x(new Date(d.data.Date)))
+      .attr('y', d => y(d[1] - d[0]))
+      .attr('width', x.bandwidth())
+      .attr('height', d => y(0) - y(d[1] - d[0]))
+      .attr('fill', color);
+
     chartGroup.append('g')
-      .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)  
-      .call(d3.axisBottom(x).ticks(3).tickFormat(d3.timeFormat('%b')))  
-  
+      .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
+      .call(d3.axisBottom(x).ticks(3).tickFormat(d3.timeFormat('%b'))) //%b ensures the months are shown properly 
+
     chartGroup.append('g')
-      .call(d3.axisLeft(y).ticks(3))
+      .call(d3.axisLeft(y).ticks(10)) //ticks for y-axis
       .style('font-size', '10px');
-  
-    return svg.node(); 
+
+    return svg.node();
   }
 
   render() {
