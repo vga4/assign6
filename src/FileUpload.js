@@ -14,11 +14,11 @@ class FileUpload extends Component {
         const url = URL.createObjectURL(blob); // Create a URL for the Blob
 
         d3.csv(url).then((data) => { // Use d3.csv to parse the CSV data (asynchronously)
-          const formattedData = data.map(d => ({ // Format the data
+          const formattedData = data.map(d => ({ // Format the data, name each column appropriately and parse the proper data
             Date: d.Date,
             "GPT-4": parseInt(d["GPT-4"]),
             "Gemini": parseInt(d["Gemini"]),
-            "PaLM-2": parseInt(d["Claude"]),
+            "PaLM-2": parseInt(d["PaLM-2"]),
             "Claude": parseInt(d["Claude"]),
             "LLaMA-3.1": parseInt(d["LLaMA-3.1"])
           }));
